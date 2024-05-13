@@ -16,6 +16,10 @@ Simple, just run:
 pnpm run start
 ```
 
+## Found a security issue?
+
+Please let me know by creating an issue or a pull request. I'm not a security expert but I'm always willing to learn.
+
 ## Why did I make this?
 
 I wanted to understand how Lastpass encrypts your data and how it's stored. I need the same level of security for a project I'm working on and I wanted to understand how it works.

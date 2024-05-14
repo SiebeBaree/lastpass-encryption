@@ -65,7 +65,7 @@ const encrypted = encryptData(
 console.log(`Encrypted: ${encrypted}`);
 
 // Generate auth hash
-const authHashKey = await getPBKDF2Key(passwordData.data, salt, 1, 32);
+const authHashKey = await getPBKDF2Key(localStorage.getItem("private_key"), salt, 1, 32);
 const scryptSalt = crypto.randomBytes(16);
 const loginHash = await new Promise((resolve, reject) => {
     crypto.scrypt(authHashKey.toString("hex"), scryptSalt, 32, { N: 16384 }, (err, derivedKey) => {
@@ -76,13 +76,10 @@ const loginHash = await new Promise((resolve, reject) => {
 console.log(`Login Hash: ${loginHash}`);
 
 // Server: auth
-const storedLoginHash = loginHash; // Store when initial register
-function authenticate(userHash) {
-    return userHash === storedLoginHash;
-}
+await server.login(loginHash);
 
 // Client: decrypting the data
-if (authenticate(loginHash)) {
+if (await server.authenticate(loginHash)) {
     const decipher = crypto.createDecipheriv(encryptionMethod, key, iv);
     let decrypted = decipher.update(encrypted, "hex", "utf8");
     decrypted += decipher.final("utf8");
